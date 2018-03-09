@@ -37,7 +37,27 @@ PenguinTable.propTypes = {
   penguins: PropTypes.arrayOf(PropTypes.penguin).isRequired,
 };
 
-class App extends Component {
+const AppPresenter = ({ loading = false, penguins }) => {
+  const body = loading ?
+    <h1>Loading...</h1> :
+    <PenguinTable penguins={penguins} />;
+  return (
+    <div className="App">
+      {body}
+    </div>
+  );
+};
+
+AppPresenter.propTypes = {
+  loading: PropTypes.bool,
+  penguins: PropTypes.arrayOf(PropTypes.penguin),
+};
+AppPresenter.defaultProps = {
+  loading: false,
+  penguins: [],
+};
+
+class AppContainer extends Component {
   constructor() {
     super();
     this.state = { loading: true };
@@ -49,15 +69,8 @@ class App extends Component {
       });
   }
   render() {
-    const body = this.state.loading ?
-      <h1>Loading...</h1> :
-      <PenguinTable penguins={this.state.penguins} />;
-    return (
-      <div className="App">
-        {body}
-      </div>
-    );
+    return <AppPresenter penguins={this.state.penguins} loading={this.state.loading} />;
   }
 }
 
-export default App;
+export default AppContainer;
