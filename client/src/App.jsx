@@ -1,6 +1,41 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './App.css';
 import { getPenguins } from './penguin-svc';
+
+PropTypes.penguin = PropTypes.shape({
+  name: PropTypes.string.isRequired,
+  imgUrl: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
+});
+const PenguinRow = ({ penguin }) => (<tr>
+  <td>
+    {penguin.name}
+  </td>
+  <td>
+    <img className="penguin-img" src={penguin.imgUrl} alt={penguin.name} />
+  </td>
+</tr>);
+
+PenguinRow.propTypes = {
+  penguin: PropTypes.penguin.isRequired,
+};
+
+const PenguinTable = ({ penguins }) => (<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Image</th>
+    </tr>
+  </thead>
+  <tbody>
+    {penguins.map(penguin => <PenguinRow key={penguin.id} penguin={penguin} />)}
+  </tbody>
+</table>);
+
+PenguinTable.propTypes = {
+  penguins: PropTypes.arrayOf(PropTypes.penguin).isRequired,
+};
 
 class App extends Component {
   constructor() {
@@ -16,24 +51,7 @@ class App extends Component {
   render() {
     const body = this.state.loading ?
       <h1>Loading...</h1> :
-      (<table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Image</th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.state.penguins.map(penguin => (<tr key={penguin.id}>
-            <td>
-              {penguin.name}
-            </td>
-            <td>
-              <img className="penguin-img" src={penguin.imgUrl} alt={penguin.name} />
-            </td>
-          </tr>))}
-        </tbody>
-      </table>);
+      <PenguinTable penguins={this.state.penguins} />;
     return (
       <div className="App">
         {body}
