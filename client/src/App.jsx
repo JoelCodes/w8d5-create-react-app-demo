@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import './App.css';
-import { getPenguins } from './penguin-svc';
 
 PropTypes.penguin = PropTypes.shape({
   name: PropTypes.string.isRequired,
@@ -57,20 +57,10 @@ AppPresenter.defaultProps = {
   penguins: [],
 };
 
-class AppContainer extends Component {
-  constructor() {
-    super();
-    this.state = { loading: true };
-  }
-  componentDidMount() {
-    getPenguins()
-      .then((penguins) => {
-        this.setState({ loading: false, penguins });
-      });
-  }
-  render() {
-    return <AppPresenter penguins={this.state.penguins} loading={this.state.loading} />;
-  }
-}
+const mapStateToProps = ({ penguins, loading }) => ({
+  penguins,
+  loading,
+});
 
+const AppContainer = connect(mapStateToProps)(AppPresenter);
 export default AppContainer;
